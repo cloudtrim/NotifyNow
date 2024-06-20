@@ -1,7 +1,5 @@
 # NotifyNow
 
-# NotifyNow
-
 NotifyNow is a Django-based application designed to send reminders to users via email and SMS. Users can create reminders, set their schedule, and choose their preferred delivery method. This project is ideal for anyone looking to implement a notification system for timely alerts and reminders.
 
 ## Features
