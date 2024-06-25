@@ -24,10 +24,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path("", home, name = "home"),
+    
 
-    path("login_page", login_page, name = "login_page"),
-    path("signup/", signup, name = "signup"),
-    path("dashboard/", dashboard, name = "dashboard"),
+    path("login_page/", login_page, name = "login_page"),
+    path("signup/", signup, name = "signup"),    
+    path('dashboard/', dashboard, name ='dashboard'),
     path('reminders/', reminders, name='reminders'),
     path('add_reminder/', add_reminder, name='add_reminder'),
     path('calendar/', calendar, name='calendar'),

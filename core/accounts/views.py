@@ -11,6 +11,7 @@ def home(request):
 
 def login_page(request):
     if request.method == "POST":
+        print("you are in login page post oprtation")
         username = request.POST.get('username')
         password = request.POST.get('password')
         print(username)
@@ -26,8 +27,12 @@ def login_page(request):
         else:
             login(request, user)
             return redirect('/dashboard')
+    else:
+        print("this is get request")
 
     return render(request, "login_page.html")
+
+
 
 def signup(request):
     if request.method == "POST":
