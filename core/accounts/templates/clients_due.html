@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +16,9 @@
             <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
-    </header>
+    </header> -->
+    {% block content %}
+
     <main>
         <h2>Clients with Due Dates Near</h2>
         <ul>
@@ -24,5 +27,8 @@
             {% endfor %}
         </ul>
     </main>
-</body>
-</html>
+
+
+    {% endblock %}
+<!-- </body>
+</html> -->

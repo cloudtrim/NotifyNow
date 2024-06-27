@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,10 +16,14 @@
             <a href="{% url 'reminders' %}">Reminders</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
-    </header>
-    <main>
+    </header>-->
+    {% block content %}
+    <main> 
+        
+
         <h2>Dashboard</h2>
         
     </main>
-</body>
-</html>
+    {% endblock %}
+<!-- </body>
+</html> -->

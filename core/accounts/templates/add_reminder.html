@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +16,9 @@
             <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
-    </header>
+    </header> -->
+    {% block content %}
+
     <main>
         <h2>Add New Reminder</h2>
         <form method="POST">
@@ -66,5 +69,8 @@
             <button type="submit">Save Reminder</button>
         </form>
     </main>
-</body>
-</html>
+
+
+    {% endblock %}
+<!-- </body>
+</html> -->
