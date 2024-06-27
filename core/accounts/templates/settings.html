@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+   
     <header>
         <h1>NotifyNow</h1>
         <nav>
@@ -15,10 +17,12 @@
             <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'reminders' %}">Reminders</a>
         </nav>
-    </header>
+    </header> -->
+    {% block content %}
     <main>
         <h2>Settings</h2>
        
     </main>
-</body>
-</html>
+    {% endblock %}
+<!-- </body>
+</html> -->

@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +16,9 @@
             <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
-    </header>
+    </header> -->
+    {% block content %}
+
     <main>
         <h2>Upcoming Reminders</h2>
         <ul>
@@ -26,5 +29,8 @@
         <a href="{% url 'add_reminder' %}">Add New Reminder</a>
         <a href="{% url 'clients_due' %}">Clients with Due Dates Near</a>
     </main>
-</body>
-</html>
+
+
+    {% endblock %}
+<!-- </body>
+</html> -->
