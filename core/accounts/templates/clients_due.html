@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotifyNow - Reminders</title>
+    <title>NotifyNow - Clients Due</title>
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <header>
         <h1>NotifyNow</h1>
         <nav>
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'calendar_view' %}">Calendar</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
     </header>
     <main>
-        <h2>Upcoming Reminders</h2>
+        <h2>Clients with Due Dates Near</h2>
         <ul>
-            {% for reminder in reminders %}
-            <li>{{ reminder.title }} - {{ reminder.date }} {{ reminder.time }}</li>
+            {% for reminder in due_soon %}
+            <li>{{ reminder.client.name }} - {{ reminder.date }} {{ reminder.time }}</li>
             {% endfor %}
         </ul>
-        <a href="{% url 'add_reminder' %}">Add New Reminder</a>
     </main>
 </body>
 </html>

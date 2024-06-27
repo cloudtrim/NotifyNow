@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyNow - Add Reminder</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>NotifyNow</h1>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'settings' %}">Settings</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Add New Reminder</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div>
+                <label for="title">Topic:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            <div>
+                <label for="date">Due Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div>
+                <label for="time">Due Time:</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+            <div>
+                <label for="client">Client:</label>
+                <select id="client" name="client">
+                    {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="repeat_interval">Repeat Interval:</label>
+                <input type="text" id="repeat_interval" name="repeat_interval" required>
+            </div>
+            <div>
+                <label for="notify-email">
+                    <input type="checkbox" id="notify-email" name="notify_email">
+                    Email Notification
+                </label>
+            </div>
+            <div>
+                <label for="notify-sms">
+                    <input type="checkbox" id="notify-sms" name="notify_sms">
+                    SMS Notification
+                </label>
+            </div>
+            <div>
+                <label for="notify-push">
+                    <input type="checkbox" id="notify-push" name="notify_push" checked>
+                    Push Notification
+                </label>
+            </div>
+            <button type="submit">Save Reminder</button>
+        </form>
+    </main>
+</body>
+</html>

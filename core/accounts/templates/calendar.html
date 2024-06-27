@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotifyNow - Add Reminder</title>
+    <title>NotifyNow - Calendar</title>
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <header>
         <h1>NotifyNow</h1>
         <nav>
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'calendar_view' %}">Calendar</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'reminders' %}">Reminders</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
     </header>
     <main>
-        <h2>Add New Reminder</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save Reminder</button>
-        </form>
+        <h2>Calendar View</h2>
+        
     </main>
 </body>
 </html>

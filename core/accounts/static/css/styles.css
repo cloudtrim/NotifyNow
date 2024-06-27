@@ -5,7 +5,7 @@ body {
 }
 
 header {
-    background-color: #4CAF50;
+    background-color: #1a5bbb;
     color: white;
     padding: 1em;
     text-align: center;
@@ -37,7 +37,7 @@ input, select, textarea {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #1a5bbb;
     color: white;
     border: none;
     padding: 1em 2em;
@@ -45,5 +45,5 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #1a5bbb;
 }

@@ -4,6 +4,10 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from .models import Reminder, Client
+from .forms import ReminderForm, ClientForm
+from datetime import date, timedelta
+
 
 # Create your views here.
 def home(request):
@@ -11,7 +15,6 @@ def home(request):
 
 def login_page(request):
     if request.method == "POST":
-        print("you are in login page post oprtation")
         username = request.POST.get('username')
         password = request.POST.get('password')
         print(username)
@@ -23,16 +26,13 @@ def login_page(request):
 
         if user is None:
             messages.info(request, 'Invalid password.')
+            print("invalid password")
             return redirect('/login_page')
         else:
             login(request, user)
             return redirect('/dashboard')
-    else:
-        print("this is get request")
 
     return render(request, "login_page.html")
-
-
 
 def signup(request):
     if request.method == "POST":
@@ -63,3 +63,32 @@ def signup(request):
 
 
     return render(request, "signup.html")
+
+def dashboard(request):
+    return render(request, "dashboard.html")
+
+def reminders(request):
+    reminders = Reminder.objects.all()
+    return render(request, 'reminders.html')
+
+def add_reminder(request):
+    if request.method == 'POST':
+        form = ReminderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('reminders')
+    else:
+        form = ReminderForm()
+    return render(request, 'add_reminder.html')
+
+def calendar(request):
+    reminders = Reminder.objects.all()
+    return render(request, 'calendar.html')
+
+def settings(request):
+    return render(request, 'settings.html')
+
+def clients_due(request):
+    today = date.today()
+    due_soon = Reminder.objects.filter(date__range=[today, today + timedelta(days=7)])
+    return render(request, 'clients_due.html', {'due_soon': due_soon})
