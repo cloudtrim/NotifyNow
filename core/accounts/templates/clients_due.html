@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyNow - Clients Due</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>NotifyNow</h1>
+        <nav>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'settings' %}">Settings</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Clients with Due Dates Near</h2>
+        <ul>
+            {% for reminder in due_soon %}
+            <li>{{ reminder.client.name }} - {{ reminder.date }} {{ reminder.time }}</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

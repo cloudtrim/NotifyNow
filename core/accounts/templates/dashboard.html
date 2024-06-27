@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyNow - Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>NotifyNow</h1>
+        <nav>
+            <a href="{% url 'calendar' %}">Calendar</a>
+            <a href="{% url 'reminders' %}">Reminders</a>
+            <a href="{% url 'settings' %}">Settings</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Dashboard</h2>
+        
+    </main>
+</body>
+</html>
