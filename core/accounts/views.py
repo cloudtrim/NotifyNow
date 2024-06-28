@@ -73,13 +73,17 @@ def reminders(request):
 
 def add_reminder(request):
     if request.method == 'POST':
-        form = ReminderForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('reminders')
-    else:
-        form = ReminderForm()
+        reminder_title = request.POST.get('reminder_title')
+        expiration_date = request.POST.get('expiration_date')
+        notes = request.POST.get('notes')
+        durations = request.POST.getlist('duration[]')
+        duration_types = request.POST.getlist('duration_type[]')
+        duration_relatives = request.POST.getlist('duration_relative[]')
+        times = request.POST.getlist('time[]')
+        email_templates = request.POST.getlist('email_template[]')
+        sms_templates = request.POST.getlist('sms_template[]')
     return render(request, 'add_reminder.html')
+    
 
 def calendar(request):
     reminders = Reminder.objects.all()
@@ -92,3 +96,5 @@ def clients_due(request):
     today = date.today()
     due_soon = Reminder.objects.filter(date__range=[today, today + timedelta(days=7)])
     return render(request, 'clients_due.html', {'due_soon': due_soon})
+
+
