@@ -10,7 +10,8 @@ from datetime import date, timedelta
 from .models import Contact, CustomField
 from .forms import ContactForm, CustomFieldForm
 from django.forms import modelformset_factory
-
+import logging
+logger = logging.getLogger('notfyNowApp')
 
 # Create your views here.
 def home(request):
@@ -76,8 +77,10 @@ def reminders(request):
 
 def add_reminder(request):
     if request.method == 'POST':
+        
         reminder_title = request.POST.get('reminder_title')
         expiration_date = request.POST.get('expiration_date')
+        logger.debug(" reminder_title :{}, expiration_date :{} ".format(reminder_title,expiration_date))
         notes = request.POST.get('notes')
         durations = request.POST.getlist('duration[]')
         duration_types = request.POST.getlist('duration_type[]')
@@ -118,6 +121,7 @@ def create_contact(request):
 
     if request.method == 'POST':
         contact_form = ContactForm(request.POST)
+        logger.debug("contact_form = {}".format(contact_form))
         formset = CustomFieldFormSet(request.POST, queryset=CustomField.objects.none())
         
         if contact_form.is_valid() and formset.is_valid():
