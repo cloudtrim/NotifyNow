@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigation Bar</title>
+    <!-- <title>Navigation Bar</title> -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -98,6 +98,8 @@
         <h2 style="color: white; padding-left: 15px;">Menu</h2>
         <a href="{% url 'dashboard' %}">Dashboard</a>
         <a href="{% url 'reminders' %}">Reminder</a>
+        <a href="{% url 'contacts_list' %}">Contacts</a>
+        <a href="{% url 'templates' %}">Templates</a>
         <a href="{% url 'calendar' %}">Calendar</a>
         <a href="{% url 'settings' %}">Settings</a>
     </div>

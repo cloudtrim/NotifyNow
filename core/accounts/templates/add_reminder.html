@@ -1,74 +1,19 @@
+{% extends 'base.html'%}
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotifyNow</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/try.css' %}">
-</head>
-<body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="logo">NotifyNow</div>
-            <nav>
-                <ul>
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Reminders</a></li>
-                    <li><a href="#">Calendar</a></li>
-                    <li><a href="#">Settings</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="content">
-            <header>
-                <div class="title">New Expiration Reminder</div>
-                <div class="profile">Profile</div>
-            </header>
-            <section class="form-section">
-                <form>
-                    <div class="form-group">
-                        <label for="reminder-title">Reminder Title</label>
-                        <input type="text" id="reminder-title" placeholder="Enter Title">
-                    </div>
-                    <div class="form-group">
-                        <label for="expiration-date">Expiration Date</label>
-                        <input type="date" id="expiration-date">
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <textarea id="notes" placeholder="Enter notes"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Set Reminder Days</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" value="1"> 1 day before</label>
-                            <label><input type="checkbox" value="3"> 3 days before</label>
-                            <label><input type="checkbox" value="5"> 5 days before</label>
-                            <label><input type="checkbox" value="7"> 7 days before</label>
-                            <label><input type="checkbox" value="15"> 15 days before</label>
-                        </div>
-                    </div>
-                    <button type="submit">Save</button>
-                </form>
-            </section>
-        </main>
-    </div>
-</body>
-</html> -->
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotifyNow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    
+    {% block content %}
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/add_reminder.css' %}">
-</head>
-<body>
+    <title>Add_Reminder</title>
+<!-- </head>
+<body> -->
+    
     <div class="container">
-        <aside class="sidebar">
+        <!-- <aside class="sidebar">
             <div class="logo">NotifyNow</div>
             <nav>
                 <ul>
@@ -78,11 +23,10 @@
                     <li><a href="#">Settings</a></li>
                 </ul>
             </nav>
-        </aside>
+        </aside> -->
         <main class="content">
             <header>
                 <div class="title">New Expiration Reminder</div>
-                <!-- <div class="profile"><button>Profile</button></div> -->
             </header>
             <section class="form-section">
                 <form>
@@ -98,6 +42,41 @@
                         <label for="notes">Notes</label>
                         <textarea id="notes" placeholder="Enter notes"></textarea>
                     </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="auto-renew">Auto Renew (Recurring)</label>
+                            <input type="checkbox" id="auto-renew" name="auto_renew">
+                            <div id="auto-renew-options" class="hidden">
+                                <label for="every">Every</label>
+                                <input type="number" id="every" name="every" min="1" value="1">
+                                <select id="every-unit" name="every_unit">
+                                    <option value="day">Day</option>
+                                    <option value="week">Week</option>
+                                    <option value="month">Month</option>
+                                    <option value="year">Year</option>
+                                </select>
+                                <p>Next Renewal: <span id="next-renewal-date">--/--/----</span></p>
+                                <label for="ends">Ends</label>
+                                <div class="radio-group">
+                                    <input type="radio" id="ends-never" name="ends" value="never" checked>
+                                    <label for="ends-never">Never</label>
+                                    <input type="radio" id="ends-after" name="ends" value="after">
+                                    <label for="ends-after">After</label>
+                                    <input type="number" id="renewals" name="renewals" min="1" value="1">
+                                    <label for="renewals">Renewals</label>
+                                </div>
+                                <div class="radio-group">
+                                    <input type="radio" id="renew-same" name="renew_type" value="same" checked>
+                                    <label for="renew-same">Renew Same</label>
+                                    <input type="radio" id="renew-copy" name="renew_type" value="copy">
+                                    <label for="renew-copy">Renew as Copy</label>
+                                </div>
+                                <label for="renew-update">Renew/update Expiration Date upon reply</label>
+                                <input type="checkbox" id="renew-update" name="renew_update">
+                            </div>
+                        </div>
+                    </form>
                     <div class="form-group">
                         <label>Reminder Sequence</label>
                         <div class="sequence">
@@ -123,7 +102,6 @@
                                 <input type="text" id="sms-template-1" placeholder="Expiration SMS Template">
                                 <button type="button" class="remove-sequence">Remove</button>
                             </div>
-                            <!-- Add more sequence items as needed -->
                         </div>
                         <button type="button" id="add-sequence">Add Row</button>
                     </div>
@@ -168,8 +146,40 @@
                 e.target.parentElement.remove();
             }
         });
+
+        document.getElementById('auto-renew').addEventListener('change', function() {
+            const autoRenewOptions = document.getElementById('auto-renew-options');
+            if (this.checked) {
+                autoRenewOptions.classList.remove('hidden');
+            } else {
+                autoRenewOptions.classList.add('hidden');
+            }
+        });
+
+
+        document.getElementById('every').addEventListener('input', updateNextRenewalDate);
+        document.getElementById('every-unit').addEventListener('change', updateNextRenewalDate);
+        document.getElementById('expiration-date').addEventListener('input', updateNextRenewalDate);
+
+        function updateNextRenewalDate() {
+            const every = document.getElementById('every').value;
+            const unit = document.getElementById('every-unit').value;
+            const expirationDate = new Date(document.getElementById('expiration-date').value);
+            if (isNaN(expirationDate)) return;
+
+            let nextRenewalDate = new Date(expirationDate);
+            if (unit === 'day') nextRenewalDate.setDate(expirationDate.getDate() + parseInt(every));
+            if (unit === 'week') nextRenewalDate.setDate(expirationDate.getDate() + parseInt(every) * 7);
+            if (unit === 'month') nextRenewalDate.setMonth(expirationDate.getMonth() + parseInt(every));
+            if (unit === 'year') nextRenewalDate.setFullYear(expirationDate.getFullYear() + parseInt(every));
+
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            document.getElementById('next-renewal-date').textContent = nextRenewalDate.toLocaleDateString(undefined, options);
+        }
     </script>
-</body>
-</html>
+    {% endblock %}
+<!-- </body>
+</html> -->
 
 
+ 

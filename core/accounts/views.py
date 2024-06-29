@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate, login
 from .models import Reminder, Client
 from .forms import ReminderForm, ClientForm
 from datetime import date, timedelta
+from .models import Contact, CustomField
+from .forms import ContactForm, CustomFieldForm
+from django.forms import modelformset_factory
 
 
 # Create your views here.
@@ -82,6 +85,13 @@ def add_reminder(request):
         times = request.POST.getlist('time[]')
         email_templates = request.POST.getlist('email_template[]')
         sms_templates = request.POST.getlist('sms_template[]')
+        auto_renew = request.POST.get('auto_renew') == 'on'
+        every = request.POST.get('every')
+        every_unit = request.POST.get('every_unit')
+        ends = request.POST.get('ends')
+        renewals = request.POST.get('renewals')
+        renew_type = request.POST.get('renew_type')
+        renew_update = request.POST.get('renew_update') == 'on'
     return render(request, 'add_reminder.html')
     
 
@@ -98,3 +108,37 @@ def clients_due(request):
     return render(request, 'clients_due.html', {'due_soon': due_soon})
 
 
+def contacts_list(request):
+    contacts = Contact.objects.all()
+    return render(request, 'contacts_list.html', {'contacts': contacts})
+
+
+def create_contact(request):
+    CustomFieldFormSet = modelformset_factory(CustomField, form=CustomFieldForm, extra=1, can_delete=True)
+
+    if request.method == 'POST':
+        contact_form = ContactForm(request.POST)
+        formset = CustomFieldFormSet(request.POST, queryset=CustomField.objects.none())
+        
+        if contact_form.is_valid() and formset.is_valid():
+            contact = contact_form.save()
+            for form in formset:
+                if form.cleaned_data:
+                    custom_field = form.save(commit=False)
+                    custom_field.contact = contact
+                    custom_field.save()
+            return redirect('contacts_list')
+    else:
+        contact_form = ContactForm()
+        formset = CustomFieldFormSet(queryset=CustomField.objects.none())
+    
+    return render(request, 'create_contact.html', {
+        'contact_form': contact_form,
+        'formset': formset
+    })
+
+def templates(request):
+    return render(request, 'templates.html')
+
+def create_template(request):
+    return render(request, 'create_template.html')
