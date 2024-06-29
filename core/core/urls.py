@@ -33,6 +33,10 @@ urlpatterns = [
     path('calendar/', calendar, name='calendar'),
     path('settings/', settings, name='settings'),
     path('clients_due/', clients_due, name='clients_due'),
+    path('contacts/', contacts_list, name='contacts_list'),
+    path('create_contact/', create_contact, name='create_contact'),
+    path('templates/', templates, name = 'templates'),
+    path('create_template/', create_template, name = 'create_template'),
     
 ]
 

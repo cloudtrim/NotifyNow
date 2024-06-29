@@ -35,3 +35,35 @@ class Reminder(models.Model):
     def __str__(self):
         return self.title
     
+    
+class Contact(models.Model):
+    GROUP_CHOICES = [
+        ('Customers', 'Customers'),
+        ('Vendors', 'Vendors'),
+        ('Employees', 'Employees'),
+    ]
+    
+    group = models.CharField(max_length=20, choices=GROUP_CHOICES, default='Customers')
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    mobile_number = models.CharField(max_length=15, blank=True, null=True)
+    reminders = models.IntegerField(default=0)
+    user = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+class CustomField(models.Model):
+    FIELD_TYPE_CHOICES = [
+        ('text', 'Text'),
+        ('numeric', 'Numeric')
+    ]
+    
+    contact = models.ForeignKey(Contact, related_name='custom_fields', on_delete=models.CASCADE)
+    field_type = models.CharField(max_length=10, choices=FIELD_TYPE_CHOICES)
+    label = models.CharField(max_length=50)
+    value = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.label}: {self.value}'
