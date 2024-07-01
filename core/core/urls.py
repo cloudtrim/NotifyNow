@@ -19,6 +19,7 @@ from django.urls import path
 from accounts.views import *
 
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
 
@@ -37,6 +38,9 @@ urlpatterns = [
     path('create_contact/', create_contact, name='create_contact'),
     path('templates/', templates, name = 'templates'),
     path('create_template/', create_template, name = 'create_template'),
+    path('input_details/', input_details, name='input_details'),
+    path('send_template/', send_template, name='send_template'),
+    path('success/', success, name='success'), 
     
 ]
 

@@ -67,3 +67,12 @@ class CustomField(models.Model):
 
     def __str__(self):
         return f'{self.label}: {self.value}'
+    
+
+class Template(models.Model):
+    template_name = models.CharField(max_length=100)
+    template_content = models.TextField()
+    user = models.CharField(max_length=100)  # Assuming user is a text field
+
+    def __str__(self):
+        return self.template_name
