@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reminder, Client, CustomField, Contact
+from .models import Reminder, Client, CustomField, Contact, Template
 
 class ReminderForm(forms.ModelForm):
     class Meta:
@@ -20,3 +20,8 @@ class CustomFieldForm(forms.ModelForm):
     class Meta:
         model = CustomField
         fields = ['field_type', 'label', 'value']
+
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = Template
+        fields = ['template_name', 'template_content']

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -10,6 +10,10 @@ from datetime import date, timedelta
 from .models import Contact, CustomField
 from .forms import ContactForm, CustomFieldForm
 from django.forms import modelformset_factory
+from django.views.decorators.http import require_POST
+from .models import Template
+from .forms import TemplateForm
+from django.core.mail import send_mail
 import logging
 logger = logging.getLogger('notfyNowApp')
 
@@ -21,7 +25,6 @@ def login_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username)
         if not User.objects.filter(username = username).exists():
             messages.info(request, 'Invalid username.')
             return redirect('/login_page')
@@ -145,4 +148,55 @@ def templates(request):
     return render(request, 'templates.html')
 
 def create_template(request):
-    return render(request, 'create_template.html')
+    if request.method == 'POST':
+        template_name = request.POST.get('templateName')
+        template_content = request.POST.get('templateContent')
+        user = request.POST.get('user')
+        
+        template = Template.objects.create(
+            template_name=template_name,
+            template_content=template_content,
+            user=user
+        )
+        
+        return redirect('/input_details/')  
+    else:
+        return render(request, 'create_template.html')
+    
+
+def input_details(request):
+    templates = Template.objects.all()  
+    return render(request, 'input_details.html', {'templates': templates})
+
+def send_template(request):
+    if request.method == 'POST':
+        template_id = request.POST.get('template')
+        template = get_object_or_404(Template, id=template_id)
+        
+        title = request.POST.get('title')
+        client_name = request.POST.get('clientName')
+        date = request.POST.get('date')
+        email = request.POST.get('email')
+        
+        template_content = template.template_content
+        template_content = template_content.replace('[TITLE]', title)
+        template_content = template_content.replace('[CLIENT_NAME]', client_name)
+        template_content = template_content.replace('[DATE]', date)
+        
+        send_mail(
+            subject=template.template_name,
+            message=template_content,
+            from_email='antharev@gmail.com',
+            recipient_list=[email],
+            fail_silently=False,
+        )
+        
+        return redirect('/success/') 
+    else:
+        return redirect('/input_details/')
+    
+
+def success(request):
+    return render(request, 'success.html')
+
+
