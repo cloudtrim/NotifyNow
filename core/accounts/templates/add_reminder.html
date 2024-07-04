@@ -56,7 +56,7 @@
                                     <option value="month">Month</option>
                                     <option value="year">Year</option>
                                 </select>
-                                <p>Next Renewal: <span id="next-renewal-date">--/--/----</span></p>
+                                <!-- <p>Next Renewal: <span id="next-renewal-date">--/--/----</span></p> -->
                                 <label for="ends">Ends</label>
                                 <div class="radio-group">
                                     <input type="radio" id="ends-never" name="ends" value="never" checked>
@@ -72,8 +72,8 @@
                                     <input type="radio" id="renew-copy" name="renew_type" value="copy">
                                     <label for="renew-copy">Renew as Copy</label>
                                 </div>
-                                <label for="renew-update">Renew/update Expiration Date upon reply</label>
-                                <input type="checkbox" id="renew-update" name="renew_update">
+                                <!-- <label for="renew-update">Renew/update Expiration Date upon reply</label>
+                                <input type="checkbox" id="renew-update" name="renew_update"> -->
                             </div>
                         </div>
                     </form>
@@ -95,15 +95,18 @@
                                     </select>
                                 </div>
                                 <label for="time-1">Time</label>
-                                <input type="time" id="time-1" value="09:00">
-                                <label for="email-template-1">Email Template</label>
-                                <input type="text" id="email-template-1" placeholder="Expiration Email Template">
-                                <label for="sms-template-1">SMS Template</label>
-                                <input type="text" id="sms-template-1" placeholder="Expiration SMS Template">
+                                <input type="time" id="time-1" value="10:00">
+                                <label for="email-template-1">Template</label>
+                                <!-- <input type="text" id="email-template-1" placeholder="Choose Template"> -->
+                                <select id="email-template-1">
+                                    <option>abc</option>
+                                    <option>efg</option>
+                                    <option>lmn</option>
+                                </select>
                                 <button type="button" class="remove-sequence">Remove</button>
                             </div>
                         </div>
-                        <button type="button" id="add-sequence">Add Row</button>
+                        <button type="button" id="add-sequence">Add New</button>
                     </div>
                     <button type="submit">Save</button>
                 </form>

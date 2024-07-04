@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email/SMS Template Creation</title>
+    <title>Template Creation</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <style>
@@ -39,7 +39,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Create Email/SMS Template</h1>
+        <h1>Create Template</h1>
         <form id="templateForm" action="/create_template/" method="POST">
             {% csrf_token %}
             <div class="form-group">
@@ -50,10 +50,10 @@
                 <label for="templateContent">Template Content:</label>
                 <textarea class="form-control" id="templateContent" name="templateContent" rows="6" required></textarea>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="user">User:</label>
                 <input type="text" class="form-control" id="user" name="user" required>
-            </div>
+            </div> -->
             <button type="submit" class="btn btn-primary">Save Template</button>
             <a href="/input_details/" class="btn btn-secondary">Cancel</a>
         </form>

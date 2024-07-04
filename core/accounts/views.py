@@ -114,12 +114,12 @@ def clients_due(request):
     return render(request, 'clients_due.html', {'due_soon': due_soon})
 
 
-def contacts_list(request):
-    contacts = Contact.objects.all()
-    return render(request, 'contacts_list.html', {'contacts': contacts})
+def client_list(request):
+    client = Client.objects.all()
+    return render(request, 'client_list.html', {'client': client})
 
 
-def create_contact(request):
+def add_client(request):
     CustomFieldFormSet = modelformset_factory(CustomField, form=CustomFieldForm, extra=1, can_delete=True)
 
     if request.method == 'POST':

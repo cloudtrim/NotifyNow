@@ -14,7 +14,7 @@ class ClientForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ['group', 'first_name', 'last_name', 'email', 'mobile_number']
+        fields = ['first_name', 'last_name', 'email', 'mobile_number', 'service_type']
 
 class CustomFieldForm(forms.ModelForm):
     class Meta:
