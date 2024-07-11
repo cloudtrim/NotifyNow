@@ -41,6 +41,8 @@ urlpatterns = [
     path('input_details/', input_details, name='input_details'),
     path('send_template/', send_template, name='send_template'),
     path('success/', success, name='success'), 
+    path('reminder_success/', reminder_success, name='reminder_success'),
+    path('detail/<int:pk>/', reminder_detail, name='reminder_detail'),
     
 ]
 

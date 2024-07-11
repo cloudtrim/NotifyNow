@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reminder Details</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/multi_select_with_checkboxes.css' %}">
+</head>
+<body>
+    <h1>{{ reminder.title }}</h1>
+    <p>Expiry Date: {{ reminder.expiry_date }}</p>
+    <p>Clients:
+        <ul>
+            {% for client in reminder.clients.all %}
+                <li>{{ client.name }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+    <p>Duration: {% if reminder.duration > 0 %}{{ reminder.duration }} days before{% else %}{{ reminder.duration|abs }} days after{% endif %}</p>
+    <p>Reminder Time: {{ reminder.reminder_time }}</p>
+</body>
+</html>

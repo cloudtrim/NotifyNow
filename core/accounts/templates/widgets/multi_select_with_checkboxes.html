@@ -1,0 +1,23 @@
+<!-- reminders/templates/widgets/multi_select_with_checkboxes.html -->
+<div class="dropdown-multiselect">
+    <select multiple style="display: none;">
+        {% for group in widget.optgroups %}
+            {% for option in group.1 %}
+                <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+        {% endfor %}
+    </select>
+    <div class="dropdown">
+        <button class="dropbtn">Select Clients</button>
+        <div class="dropdown-content">
+            {% for group in widget.optgroups %}
+                {% for option in group.1 %}
+                    <label>
+                        <input type="checkbox" value="{{ option.value }}" {% if option.selected %}checked{% endif %}>
+                        {{ option.label }}
+                    </label>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
