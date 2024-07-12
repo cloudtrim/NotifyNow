@@ -1,5 +1,5 @@
-{% extends 'base.html'%}
-<!-- <!DOCTYPE html>
+<!-- {% extends 'base.html'%}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
             <a href="{% url 'calendar' %}">Calendar</a>
             <a href="{% url 'settings' %}">Settings</a>
         </nav>
-    </header> -->
+    </header>
     {% block content %}
     <title>Reminders</title>
 
@@ -27,11 +27,35 @@
             <li>{{ reminder.title }} - {{ reminder.date }} {{ reminder.time }}</li>
             {% endfor %}
         </ul>
+        
         <a href="{% url 'add_reminder' %}">Add New Reminder</a>
-        <a href="{% url 'clients_due' %}">Clients with Due Dates Near</a>
+        
     </main>
 
 
     {% endblock %}
-<!-- </body>
+</body>
 </html> -->
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reminders</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Reminders</h1>
+    <ul>
+        {% for reminder in reminders %}
+            <li>
+                <a href="{% url 'add_reminder' %}">Add New Reminder</a>
+                <a href="{% url 'reminder_detail' reminder.pk %}">{{ reminder.title }} - {{ reminder.expiry_date }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

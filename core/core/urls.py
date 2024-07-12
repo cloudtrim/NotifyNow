@@ -34,13 +34,15 @@ urlpatterns = [
     path('calendar/', calendar, name='calendar'),
     path('settings/', settings, name='settings'),
     path('clients_due/', clients_due, name='clients_due'),
-    path('contacts/', contacts_list, name='contacts_list'),
-    path('create_contact/', create_contact, name='create_contact'),
+    path('client/', client_list, name='client_list'),
+    path('add_client/', add_client, name='add_client'),
     path('templates/', templates, name = 'templates'),
     path('create_template/', create_template, name = 'create_template'),
     path('input_details/', input_details, name='input_details'),
     path('send_template/', send_template, name='send_template'),
     path('success/', success, name='success'), 
+    path('reminder_success/', reminder_success, name='reminder_success'),
+    path('detail/<int:pk>/', reminder_detail, name='reminder_detail'),
     
 ]
 

@@ -25,7 +25,8 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3">Email Templates</h1>
-        <button class="btn btn-primary" onclick="createTemplate()">Create Template</button>
+        <!-- <button class="btn btn-primary" onclick="createTemplate()">Create Template</button> -->
+        <a href="{% url 'create_template' %}" class="btn btn-primary">Create Template</a>
     </div>
     <div class="mb-3">
         <input type="text" class="form-control" id="searchInput" placeholder="Search templates by name">
@@ -108,12 +109,11 @@
         renderTable();
     }
 
-    function createTemplate() {
-        // alert('Create new template functionality');
-        print("done")
-        window.location.href = "create_template.html";
+    // function createTemplate() {
+    //     // alert('Create new template functionality');
+    //     window.location.href = "create_template/";
 
-    }
+    // }
 
     function editTemplate(name) {
         alert(`Edit template: ${name}`);

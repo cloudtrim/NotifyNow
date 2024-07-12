@@ -1,8 +1,13 @@
-<!DOCTYPE html>
+{% extends 'base.html'%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+        
+        {% block content %}
+        {% load static %}
+
     <title>Success</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -32,11 +37,12 @@
             border-color: #545b62;
         }
     </style>
-</head>
-<body>
+<!-- </head>
+<body> -->
     <div class="container">
         <h1>Template Sent Successfully!</h1>
         <a href="/input_details/" class="btn btn-primary">Send Another Template</a>
     </div>
-</body>
-</html>
+<!-- </body>
+</html> -->
+{% endblock %}
