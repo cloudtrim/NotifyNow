@@ -1,58 +1,33 @@
-{% extends 'base.html'%}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    
-    {% block content %}
-    {% load static %}
-    <title>client's List</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            margin-top: 20px;
-        }
-    </style>
-<!-- </head>
-<body> -->
-    <div class="container">
-        <h2>Clients</h2>
-        <div class="d-flex justify-content-between align-items-center">
-            <a href="{% url 'add_client' %}" class="btn btn-primary">Add new Client</a>
-        </div>
-        <div class="mt-4">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email address</th>
-                        <th>Contact number</th>
-                        <th>Reminders</th>
-                        <th>User</th>
-                        <th>Service type</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for client in clients %}
-                    <tr>
-                        <td>{{ client.first_name }} {{ client.last_name }}</td>
-                        <td>{{ client.email }}</td>
-                        <td>{{ client.contact_number }}</td>
-                        <td>{{ client.reminders }}</td>
-                        <td>{{ client.user }}</td>
-                        <td>{{ client.service_type }}</td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- </body>
-</html> -->
+{% extends "base.html" %}
+
+{% block title %}Client List{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Client List</h1>
+<a href="{% url 'add_client' %}" class="btn btn-primary mb-3">Add Client</a>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact Number</th>
+            <th>Service Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <tr>
+            <td><a href="{% url 'client_details' client.pk %}">{{ client.name }}</a></td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.contact_number }}</td>
+            <td>{{ client.service_type }}</td>
+            <td>
+                <a href="{% url 'update_client' client.pk %}" class="btn btn-warning btn-sm">Update</a>
+                <a href="{% url 'delete_client' client.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

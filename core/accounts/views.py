@@ -4,11 +4,10 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import Reminder, Client
-from .forms import ReminderForm, ClientForm
+from .models import Reminder, Client, ReminderSequence
+from .forms import ReminderForm, ClientForm, ReminderSequenceForm
 from datetime import date, timedelta
-# from .models import CustomField
-from .forms import ContactForm #CustomFieldForm
+from .forms import ContactForm 
 from django.forms import modelformset_factory
 from django.views.decorators.http import require_POST
 from .models import Template
@@ -75,42 +74,30 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 def reminders(request):
-    # reminders = Reminder.objects.all()
-    # return render(request, 'reminders.html')
     reminders = Reminder.objects.all()
     return render(request, 'reminders.html', {'reminders': reminders})
 
-# def add_reminder(request):
-#     if request.method == 'POST':
-        
-#         reminder_title = request.POST.get('reminder_title')
-#         expiration_date = request.POST.get('expiration_date')
-#         logger.debug(" reminder_title :{}, expiration_date :{} ".format(reminder_title,expiration_date))
-#         notes = request.POST.get('notes')
-#         durations = request.POST.getlist('duration[]')
-#         duration_types = request.POST.getlist('duration_type[]')
-#         duration_relatives = request.POST.getlist('duration_relative[]')
-#         times = request.POST.getlist('time[]')
-#         email_templates = request.POST.getlist('email_template[]')
-#         sms_templates = request.POST.getlist('sms_template[]')
-#         auto_renew = request.POST.get('auto_renew') == 'on'
-#         every = request.POST.get('every')
-#         every_unit = request.POST.get('every_unit')
-#         ends = request.POST.get('ends')
-#         renewals = request.POST.get('renewals')
-#         renew_type = request.POST.get('renew_type')
-#         renew_update = request.POST.get('renew_update') == 'on'
-#     return render(request, 'add_reminder.html')
+
 def add_reminder(request):
     if request.method == 'POST':
-        form = ReminderForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('reminders')
+        reminder_form = ReminderForm(request.POST)
+        sequence_forms = [ReminderSequenceForm(request.POST, prefix=str(i)) for i in range(len(request.POST.getlist('duration_value')))]
+        
+        if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
+            reminder = reminder_form.save()
+            for sequence_form in sequence_forms:
+                sequence = sequence_form.save(commit=False)
+                sequence.reminder = reminder
+                sequence.save()
+            return redirect('reminders_list')
     else:
-        form = ReminderForm()
-    return render(request, 'add_reminder.html', {'form': form})
+        reminder_form = ReminderForm()
+        sequence_forms = [ReminderSequenceForm(prefix='0')]
 
+    return render(request, 'add_reminder.html', {
+        'reminder_form': reminder_form,
+        'sequence_forms': sequence_forms,
+    })
 
 def reminder_detail(request, pk):
     reminder = get_object_or_404(Reminder, pk=pk)
@@ -135,35 +122,40 @@ def clients_due(request):
 
 
 def client_list(request):
-    client = Client.objects.all()
-    return render(request, 'client_list.html', {'client': client})
+    clients = Client.objects.all()
+    return render(request, 'client_list.html', {'clients': clients})
 
+def client_details(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    return render(request, 'client_details.html', {'client': client})
 
 def add_client(request):
-    # CustomFieldFormSet = modelformset_factory(CustomField, form=CustomFieldForm, extra=1, can_delete=True)
-
     if request.method == 'POST':
-        contact_form = ContactForm(request.POST)
-        # logger.debug("contact_form = {}".format(contact_form))
-        # formset = CustomFieldFormSet(request.POST, queryset=CustomField.objects.none())
-        
-        if contact_form.is_valid():
-        # and formset.is_valid():
-            contact = contact_form.save()
-            # for form in formset:
-            #     if form.cleaned_data:
-            #         custom_field = form.save(commit=False)
-            #         custom_field.contact = contact
-            #         custom_field.save()
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect('client_list')
     else:
-        contact_form = ContactForm()
-        # formset = CustomFieldFormSet(queryset=CustomField.objects.none())
-    
-    return render(request, 'add_client.html', {
-        'contact_form': contact_form
-        # 'formset': formset
-    })
+        form = ClientForm()
+    return render(request, 'add_client.html', {'form': form})
+
+def update_client(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    if request.method == 'POST':
+        form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect('client_list')
+    else:
+        form = ClientForm(instance=client)
+    return render(request, 'update_client.html', {'form': form})
+
+def delete_client(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    if request.method == 'POST':
+        client.delete()
+        return redirect('client_list')
+    return render(request, 'delete_client.html', {'client': client})
 
 def templates(request):
     return render(request, 'templates.html')
@@ -172,12 +164,10 @@ def create_template(request):
     if request.method == 'POST':
         template_name = request.POST.get('templateName')
         template_content = request.POST.get('templateContent')
-        # user = request.POST.get('user')
         
         template = Template.objects.create(
             template_name=template_name,
             template_content=template_content,
-            # user=user
         )
         
         return redirect('/input_details/')  
