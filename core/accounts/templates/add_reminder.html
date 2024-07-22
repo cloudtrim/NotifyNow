@@ -1,17 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Reminder</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/multi_select_with_checkboxes.css' %}">
-</head>
-<body>
-    <h1>Create Reminder</h1>
+{% extends "base.html" %}
+{% block content %}
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let sequenceIndex = 1;
+
+        $('#add-sequence').click(function () {
+            let newSequenceForm = $('#sequence-forms .sequence-form:first').clone(true).get(0);
+            $(newSequenceForm).find(':input').each(function () {
+                let name = $(this).attr('name').replace(/\d+/, sequenceIndex);
+                let id = $(this).attr('id').replace(/\d+/, sequenceIndex);
+                $(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
+            });
+            $(newSequenceForm).find('.sequence-number').text(sequenceIndex + 1);
+            $(newSequenceForm).find('.remove-sequence').show();
+            sequenceIndex++;
+            $('#sequence-forms').append(newSequenceForm);
+        });
+
+        $(document).on('click', '.remove-sequence', function () {
+            $(this).closest('.sequence-form').remove();
+
+            $('.sequence-form').each(function (index) {
+                $(this).find('.sequence-number').text(index + 1);
+            });
+        });
+
+
+        $('.remove-sequence').hide();
+    });
+</script>
+
+
+<h1>{% if reminder_form.instance.pk %}Edit Reminder{% else %}Add Reminder{% endif %}</h1>
+
+<div class="container">
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
+        {{ reminder_form.as_p }}
+
+        <h2>Reminder Sequences</h2>
+        <div id="sequence-forms">
+            <div class="sequence-form">
+                <div class="sequence-number">1</div>
+                {{ sequence_forms.0.duration_value.label_tag }} {{ sequence_forms.0.duration_value }}
+                {{ sequence_forms.0.duration_unit.label_tag }} {{ sequence_forms.0.duration_unit }}
+                {{ sequence_forms.0.before_after.label_tag }} {{ sequence_forms.0.before_after }}
+                {{ sequence_forms.0.reminder_time.label_tag }} {{ sequence_forms.0.reminder_time }}
+                <button type="button" class="remove-sequence">Remove</button>
+            </div>
+        </div>
+        <button type="button" id="add-sequence">Add Sequence</button>
+
+        <button type="submit" id="save-reminder">{% if reminder_form.instance.pk %}Save Changes{% else %}Save
+            Reminder{%endif %}</button>
     </form>
-    <script src="{% static 'js/multi_select_with_checkboxes.js' %}"></script>
-</body>
-</html>
+</div>
+
+
+{% endblock %}

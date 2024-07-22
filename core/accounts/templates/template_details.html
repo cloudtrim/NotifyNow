@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Template{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Template</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ template.title }}</h5>
+        <p class="card-text"><strong>Content</strong> {{ template.content }}</p>
+        <a href="{% url 'update_template' template.pk %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'templates' %}" class="btn btn-secondary">Back to Template List</a>
+    </div>
+</div>
+{% endblock %}

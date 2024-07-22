@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Client Details{% endblock %}
+
+{% block content %}
+<h1 class="my-4">Client Details</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ client.name }}</h5>
+        <p class="card-text"><strong>Email:</strong> {{ client.email }}</p>
+        <p class="card-text"><strong>Contact Number:</strong> {{ client.contact_number }}</p>
+        <p class="card-text"><strong>Service Type:</strong> {{ client.service_type }}</p>
+        <p class="card-text"><strong>Total Reminders:</strong> {{ client.reminders_count }}</p>
+        <a href="{% url 'update_client' client.pk %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'client_list' %}" class="btn btn-secondary">Back to Client List</a>
+    </div>
+</div>
+{% endblock %}

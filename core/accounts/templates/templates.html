@@ -1,131 +1,114 @@
-{% extends 'base.html'%}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    {% block content %}
-    {% load static %}
-    <title>Email Templates</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            margin-top: 20px;
-        }
-        .table-container {
-            overflow-x: auto;
-        }
-        .actions button {
-            margin-right: 5px;
-        }
-    </style>
-<!-- </head>
-<body> -->
+{% extends "base.html" %}
+
+{% block title %}Template List{% endblock %}
+
+{% block content %}
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+
+    .btn-primary {
+        background-color: #0343b2;
+    }
+
+    .btn-secondary {
+        background-color: #0343b2;
+    }
+
+    .btn-danger {
+        background-color: #0343b2;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #dddddd;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+</style>
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3">Email Templates</h1>
-        <!-- <button class="btn btn-primary" onclick="createTemplate()">Create Template</button> -->
-        <a href="{% url 'create_template' %}" class="btn btn-primary">Create Template</a>
-    </div>
-    <div class="mb-3">
-        <input type="text" class="form-control" id="searchInput" placeholder="Search templates by name">
-    </div>
-    <div class="table-container">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="templateTableBody">
-                <!-- Dynamic rows will be inserted here by JavaScript -->
-            </tbody>
-        </table>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-secondary" id="prevPage">Previous</button>
-        <span id="pageInfo">Page 1</span>
-        <button class="btn btn-secondary" id="nextPage">Next</button>
-    </div>
+    <h1>Template List</h1>
+    <a href="{% url 'create_template' %}" class="btn btn-primary">Add New Template</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Template Title</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for template in templates %}
+            <tr>
+                <td><a href="{% url 'template_details' template.id %}">{{ template.title }}</a></td>
+                <td class="actions">
+                    <a href="{% url 'update_template' template.id %}" class="btn btn-secondary">Update</a>
+                    <a href="{% url 'delete_template' template.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-<script>
-    const templates = [
-        {name: "Appointment Email Template", user: "abc", date: "20-06-2024 09:21:00"},
-        {name: "Due Date Email Template", user: "abc", date: "21-06-2024 09:25:42"},
-        {name: "Event Email Template", user: "abc", date: "22-06-2024 09:30:50"},
-        {name: "Expiration Email Template", user: "abc", date: "23-06-2024 09:45:17"}
-    ];
-    let currentPage = 1;
-    const itemsPerPage = 10;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderTable();
-        document.getElementById('searchInput').addEventListener('input', renderTable);
-        document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
-        document.getElementById('nextPage').addEventListener('click', () => changePage(1));
-    });
 
-    function renderTable() {
-        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        const filteredTemplates = templates.filter(template => template.name.toLowerCase().includes(searchQuery));
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedTemplates = filteredTemplates.slice(start, end);
 
-        const tableBody = document.getElementById('templateTableBody');
-        tableBody.innerHTML = '';
-
-        paginatedTemplates.forEach(template => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${template.name}</td>
-                <td>${template.user}</td>
-                <td>${template.date}</td>
-                <td class="actions">
-                    <button class="btn btn-sm btn-outline-primary" onclick="editTemplate('${template.name}')">Edit</button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTemplate('${template.name}')">Delete</button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        document.getElementById('pageInfo').innerText = `Page ${currentPage}`;
-    }
-
-    function changePage(direction) {
-        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-        const filteredTemplates = templates.filter(template => template.name.toLowerCase().includes(searchQuery));
-        const totalPages = Math.ceil(filteredTemplates.length / itemsPerPage);
-
-        currentPage += direction;
-        if (currentPage < 1) currentPage = 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        renderTable();
-    }
-
-    // function createTemplate() {
-    //     // alert('Create new template functionality');
-    //     window.location.href = "create_template/";
-
-    // }
-
-    function editTemplate(name) {
-        alert(`Edit template: ${name}`);
-    }
-
-    function deleteTemplate(name) {
-        if (confirm(`Are you sure you want to delete the template: ${name}?`)) {
-            alert(`Deleted template: ${name}`);
-        }
-    }
-</script>
-
-<!-- </body>
-</html> -->
 {% endblock %}

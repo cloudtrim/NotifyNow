@@ -1,61 +1,24 @@
-<!-- {% extends 'base.html'%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <header>
-        <h1>NotifyNow</h1>
-        <nav>
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'calendar' %}">Calendar</a>
-            <a href="{% url 'settings' %}">Settings</a>
-        </nav>
-    </header>
-    {% block content %}
-    <title>Reminders</title>
+{% extends "base.html" %}
 
-    <main>
-        <h2>Upcoming Reminders</h2>
-        <ul>
-            {% for reminder in reminders %}
-            <li>{{ reminder.title }} - {{ reminder.date }} {{ reminder.time }}</li>
-            {% endfor %}
-        </ul>
-        
-        <a href="{% url 'add_reminder' %}">Add New Reminder</a>
-        
-    </main>
-
-
-    {% endblock %}
-</body>
-</html> -->
+{% block title %}Reminders List{% endblock %}
+{% block content %}
 
 
 
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Reminders</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Reminders</h1>
+<h1>Reminders List</h1>
+
+<a href="{% url 'add_reminder' %}" class="btn btn-primary mb-3">Add Reminder</a>
+
+<div class="container">
     <ul>
         {% for reminder in reminders %}
-            <li>
-                <a href="{% url 'add_reminder' %}">Add New Reminder</a>
-                <a href="{% url 'reminder_detail' reminder.pk %}">{{ reminder.title }} - {{ reminder.expiry_date }}</a>
-            </li>
+        <li>
+            <a href="{% url 'reminder_detail' reminder.pk %}">{{ reminder.name }}</a>
+        </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+</div>
+
+
+{% endblock %}
