@@ -17,14 +17,12 @@ class Client(models.Model):
     
 
 class Template(models.Model):
-    template_name = models.CharField(max_length=100)
-    template_content = models.TextField()
-    # user = models.CharField(max_length=100)  # Assuming user is a text field
+    title = models.CharField(max_length=255, default=None)
+    content = models.TextField(default=None)
 
     def __str__(self):
-        return self.template_name
-
-
+        return self.name
+    
 class Reminder(models.Model):
     title = models.CharField(max_length=100)
     due_date = models.DateField()

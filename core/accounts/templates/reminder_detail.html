@@ -1,21 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Reminder Details</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/multi_select_with_checkboxes.css' %}">
-</head>
-<body>
-    <h1>{{ reminder.title }}</h1>
-    <p>Expiry Date: {{ reminder.expiry_date }}</p>
-    <p>Clients:
-        <ul>
-            {% for client in reminder.clients.all %}
-                <li>{{ client.name }}</li>
-            {% endfor %}
-        </ul>
+{% extends "base.html" %}
+
+{% block title %}Reminder Details{% endblock %}
+
+{% block content %}
+
+
+
+<h1>{{ reminder.name }}</h1>
+
+<div class="container">
+    <p><strong>Due Date:</strong> {{ reminder.due_date }}</p>
+    <p><strong>Due Time:</strong> {{ reminder.due_time }}</p>
+    <p><strong>Clients:</strong>
+    <ul>
+        {% for client in reminder.clients.all %}
+        <li>{{ client.name }}</li>
+        {% endfor %}
+    </ul>
     </p>
-    <p>Duration: {% if reminder.duration > 0 %}{{ reminder.duration }} days before{% else %}{{ reminder.duration|abs }} days after{% endif %}</p>
-    <p>Reminder Time: {{ reminder.reminder_time }}</p>
-</body>
-</html>
+    <h2>Reminder Sequences</h2>
+    <ul>
+        {% for sequence in sequences %}
+        <li>
+            {{ sequence.duration_value }} {{ sequence.duration_unit }} {{ sequence.before_after }} expiry date at {{
+            sequence.reminder_time }}
+        </li>
+        {% endfor %}
+    </ul>
+    <div>
+        <a href="{% url 'edit_reminder' reminder.pk %}" class="button">Edit Reminder</a>
+        <form method="post" action="{% url 'delete_reminder' reminder.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="button">Delete Reminder</button>
+        </form>
+    </div>
+    <a href="{% url 'reminders_list' %}" class="button">Back to List</a>
+</div>
+
+
+{% endblock %}

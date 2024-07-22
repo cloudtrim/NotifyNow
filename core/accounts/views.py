@@ -7,7 +7,6 @@ from django.contrib.auth import authenticate, login
 from .models import Reminder, Client, ReminderSequence
 from .forms import ReminderForm, ClientForm, ReminderSequenceForm
 from datetime import date, timedelta
-from .forms import ContactForm 
 from django.forms import modelformset_factory
 from django.views.decorators.http import require_POST
 from .models import Template
@@ -78,6 +77,13 @@ def reminders(request):
     return render(request, 'reminders.html', {'reminders': reminders})
 
 
+def reminder_detail(request, pk):
+    reminder = get_object_or_404(Reminder, pk=pk)
+    sequences = reminder.sequences.all()
+    return render(request, 'reminder_detail.html', {'reminder': reminder, 'sequences': sequences})
+
+
+
 def add_reminder(request):
     if request.method == 'POST':
         reminder_form = ReminderForm(request.POST)
@@ -99,6 +105,36 @@ def add_reminder(request):
         'sequence_forms': sequence_forms,
     })
 
+
+
+def edit_reminder(request, pk):
+    reminder = get_object_or_404(Reminder, pk=pk)
+    if request.method == 'POST':
+        reminder_form = ReminderForm(request.POST, instance=reminder)
+        sequence_forms = [ReminderSequenceForm(request.POST, prefix=str(i)) for i in range(len(request.POST.getlist('duration_value')))]
+        
+        if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
+            reminder = reminder_form.save()
+            reminder.sequences.all().delete()  # Remove old sequences
+            for sequence_form in sequence_forms:
+                sequence = sequence_form.save(commit=False)
+                sequence.reminder = reminder
+                sequence.save()
+            return redirect('reminders_list')
+    else:
+        reminder_form = ReminderForm(instance=reminder)
+        sequence_forms = [ReminderSequenceForm(prefix=str(i), instance=sequence) for i, sequence in enumerate(reminder.sequences.all())]
+
+    return render(request, 'add_reminder.html', {
+        'reminder_form': reminder_form,
+        'sequence_forms': sequence_forms,
+    })
+
+def delete_reminder(request, pk):
+    reminder = get_object_or_404(Reminder, pk=pk)
+    reminder.delete()
+    return redirect('reminders_list')
+
 def reminder_detail(request, pk):
     reminder = get_object_or_404(Reminder, pk=pk)
     return render(request, 'reminder_detail.html', {'reminder': reminder})
@@ -114,11 +150,6 @@ def calendar(request):
 
 def settings(request):
     return render(request, 'settings.html')
-
-def clients_due(request):
-    today = date.today()
-    due_soon = Reminder.objects.filter(date__range=[today, today + timedelta(days=7)])
-    return render(request, 'clients_due.html', {'due_soon': due_soon})
 
 
 def client_list(request):
@@ -157,22 +188,51 @@ def delete_client(request, pk):
         return redirect('client_list')
     return render(request, 'delete_client.html', {'client': client})
 
+
 def templates(request):
-    return render(request, 'templates.html')
+    templates = Template.objects.all()
+    return render(request, 'templates.html', {'templates': templates})
+
+def template_details(request, pk):
+    template = get_object_or_404(Template, pk=pk)
+    return render(request, 'client_details.html', {'template': template})
 
 def create_template(request):
     if request.method == 'POST':
-        template_name = request.POST.get('templateName')
-        template_content = request.POST.get('templateContent')
-        
-        template = Template.objects.create(
-            template_name=template_name,
-            template_content=template_content,
-        )
-        
-        return redirect('/input_details/')  
+        form = TemplateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('templates')
     else:
-        return render(request, 'create_template.html')
+        form = TemplateForm()
+    return render(request, 'create_template.html', {'form': form})
+
+def update_template(request, pk):
+    template = get_object_or_404(Template, pk=pk)
+    if request.method == 'POST':
+        form = TemplateForm(request.POST, instance=template)
+        if form.is_valid():
+            form.save()
+            return redirect('templates')
+    else:
+        form = TemplateForm(instance=template)
+    return render(request, 'update_template.html', {'form': form})
+
+def delete_template(request, pk):
+    template = get_object_or_404(Template, pk=pk)
+    if request.method == 'POST':
+        template.delete()
+        return redirect('templates')
+    return render(request, 'delete_template.html', {'template': template})
+
+
+
+def fill_template(template, client_name, due_date, service_type):
+    filled_template = template.matter
+    filled_template = filled_template.replace("{client_name}", client_name)
+    filled_template = filled_template.replace("{due_date}", due_date)
+    filled_template = filled_template.replace("{service_type}", service_type)
+    return filled_template
     
 
 def input_details(request):

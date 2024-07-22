@@ -27,13 +27,7 @@ class ClientForm(forms.ModelForm):
         model = Client
         fields = ['name', 'email', 'contact_number', 'service_type']
 
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = ['name', 'email', 'contact_number', 'service_type']
-
-
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
-        fields = ['template_name', 'template_content']
+        fields = ['title', 'content']

@@ -1,66 +1,74 @@
-{% extends 'base.html'%}
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    {% block content %}
-    {% load static %}
-    <title>Template Creation</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% extends "base.html" %}
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 50px;
-        }
-        .container {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        h1 {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        .btn-primary {
-            margin-right: 10px;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-        }
-    </style>
-<!-- </head>
-<body> -->
-    <div class="container">
-        <h1>Create Template</h1>
-        <form id="templateForm" action="/create_template/" method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="templateName">Template Name:</label>
-                <input type="text" class="form-control" id="templateName" name="templateName" required>
-            </div>
-            <div class="form-group">
-                <label for="templateContent">Template Content:</label>
-                <textarea class="form-control" id="templateContent" name="templateContent" rows="6" required></textarea>
-            </div>
-            <!-- <div class="form-group">
-                <label for="user">User:</label>
-                <input type="text" class="form-control" id="user" name="user" required>
-            </div> -->
-            <button type="submit" class="btn btn-primary">Save Template</button>
-            <a href="/input_details/" class="btn btn-secondary">Cancel</a>
-        </form>
-    </div>
-<!-- </body>
-</html> -->
+{% block title %}Add New Template{% endblock %}
+
+{% block content %}
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        width: 60%;
+        margin: 20px auto;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-top: 10px;
+    }
+
+    input,
+    textarea {
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #dddddd;
+        border-radius: 5px;
+        width: 100%;
+    }
+
+    .btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        color: white;
+        background-color: #0343b2;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+</style>
+
+<div class="container">
+    <h1>Add New Template</h1>
+    <form method="POST" >
+        {% csrf_token %}
+        <label for="title">Template Title:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="content">Template Content:</label>
+        <textarea id="content" name="content" rows="10" required></textarea>
+
+        <button type="submit" class="btn">Save Template</button>
+    </form>
+</div>
+
+
+
 {% endblock %}
