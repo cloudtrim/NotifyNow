@@ -14,6 +14,13 @@ from .models import Template
 from .forms import TemplateForm
 from django.core.mail import send_mail
 import logging
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from .forms import ProfileForm, CustomPasswordChangeForm
+
+
+
+
 logger = logging.getLogger('notfyNowApp')
 
 # Create your views here.
@@ -312,3 +319,20 @@ def edit_event(request, event_id):
     else:
         form = EventForm(instance=event)
     return render(request, 'edit_event.html', {'form': form})
+
+
+
+@login_required
+def profile(request):
+    user = request.user
+    if request.method == 'POST':
+        password_form = CustomPasswordChangeForm(user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  
+            return redirect('profile')
+    else:
+        password_form = CustomPasswordChangeForm(user)
+    
+    profile_form = ProfileForm(instance=user)
+    return render(request, 'profile.html', {'profile_form': profile_form, 'password_form': password_form})

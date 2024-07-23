@@ -1,5 +1,7 @@
 from django import forms
 from .models import Reminder, Client, Template, ReminderSequence, Event
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 
@@ -42,4 +44,23 @@ class EventForm(forms.ModelForm):
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = "Old Password"
+        self.fields['new_password1'].label = "New Password"
+        self.fields['new_password2'].label = "Confirm New Password"
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'username']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'last_name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'email': forms.EmailInput(attrs={'readonly': 'readonly'}),
+            'username': forms.TextInput(attrs={'readonly': 'readonly'}),
         }

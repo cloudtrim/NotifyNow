@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Add Client{% endblock %}
+
+{% block content %}
+<h1>User Profile</h1>
+<form method="post">
+    {% csrf_token %}
+    <fieldset disabled>
+        {{ profile_form.as_p }}
+    </fieldset>
+    <h2>Change Password</h2>
+    {{ password_form.as_p }}
+    <button type="submit">Change Password</button>
+</form>
+{% endblock %}
