@@ -1,5 +1,6 @@
 from django import forms
-from .models import Reminder, Client, Template, ReminderSequence
+from .models import Reminder, Client, Template, ReminderSequence, Event
+
 
 
 
@@ -31,3 +32,14 @@ class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
         fields = ['title', 'content']
+
+
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', 'start_time', 'end_time']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }

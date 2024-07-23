@@ -4,8 +4,9 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import Reminder, Client, ReminderSequence
-from .forms import ReminderForm, ClientForm, ReminderSequenceForm
+from .models import Reminder, Client, ReminderSequence, Event
+from .forms import ReminderForm, ClientForm, ReminderSequenceForm, EventForm
+from django.http import JsonResponse
 from datetime import date, timedelta
 from django.forms import modelformset_factory
 from django.views.decorators.http import require_POST
@@ -271,3 +272,43 @@ def success(request):
     return render(request, 'success.html')
 
 
+def calendar_view(request):
+    events = Event.objects.all()
+    return render(request, 'calendar.html', {'events': events})
+
+def add_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('calendar')
+    else:
+        form = EventForm()
+    return render(request, 'add_event.html', {'form': form})
+
+def event_data(request):
+    events = Event.objects.all()
+    event_list = []
+    for event in events:
+        event_list.append({
+            'title': event.title,
+            'start': event.start_time.isoformat(),
+            'end': event.end_time.isoformat(),
+            'id': event.id 
+        })
+    return JsonResponse(event_list, safe=False)
+
+def event_details(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    return render(request, 'event_detail.html', {'event': event})
+
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form})
