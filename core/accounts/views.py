@@ -95,15 +95,25 @@ def reminder_detail(request, pk):
 def add_reminder(request):
     if request.method == 'POST':
         reminder_form = ReminderForm(request.POST)
+        #logger.info(reminder_form)
         sequence_forms = [ReminderSequenceForm(request.POST, prefix=str(i)) for i in range(len(request.POST.getlist('duration_value')))]
+        logger.info(sequence_forms)
+        if reminder_form.is_valid():
+            logger.info("reminder_form.is_valid")
+        
         
         if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
-            reminder = reminder_form.save()
+            reminder = reminder_form.save(commit=False)
+            reminder.save()
+            reminder_form.save_m2m() 
+            logger.info("form is valid now saving")
             for sequence_form in sequence_forms:
                 sequence = sequence_form.save(commit=False)
                 sequence.reminder = reminder
                 sequence.save()
             return redirect('reminders_list')
+        else :
+            logger.info("nothing to save")
     else:
         reminder_form = ReminderForm()
         sequence_forms = [ReminderSequenceForm(prefix='0')]
@@ -123,6 +133,7 @@ def edit_reminder(request, pk):
         
         if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
             reminder = reminder_form.save()
+            
             reminder.sequences.all().delete()  # Remove old sequences
             for sequence_form in sequence_forms:
                 sequence = sequence_form.save(commit=False)
@@ -154,7 +165,9 @@ def reminder_success(request):
 
 def calendar(request):
     reminders = Reminder.objects.all()
-    return render(request, 'calendar.html')
+    events = Event.objects.all()
+    logger.info("got events = {}".format(events))
+    return render(request, 'calendar.html', {'events': events})
 
 def settings(request):
     return render(request, 'settings.html')
@@ -286,6 +299,7 @@ def calendar_view(request):
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
+        logger.info("got form to save :{}".format(form))
         if form.is_valid():
             form.save()
             return redirect('calendar')
@@ -336,3 +350,8 @@ def profile(request):
     
     profile_form = ProfileForm(instance=user)
     return render(request, 'profile.html', {'profile_form': profile_form, 'password_form': password_form})
+
+
+def reminders_list(request):
+    reminders = Reminder.objects.all()
+    return render(request, 'reminder_list.html', {'reminders': reminders})

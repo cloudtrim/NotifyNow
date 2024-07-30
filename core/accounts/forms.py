@@ -12,9 +12,9 @@ class ClientSelectionForm(forms.Form):
 class ReminderForm(forms.ModelForm):
     class Meta:
         model = Reminder
-        fields = ['title', 'due_date', 'due_time', 'clients']
-        widgets = {
-            'clients': forms.CheckboxSelectMultiple(),
+        fields = ['title', 'due_date', 'clients']
+        widgets = {            
+           'due_date' : forms.DateTimeInput(attrs={'type': 'datetime-local'})           
         }
 
 class ReminderSequenceForm(forms.ModelForm):
@@ -24,6 +24,7 @@ class ReminderSequenceForm(forms.ModelForm):
         widgets = {
             'duration_unit': forms.Select(choices=[('days', 'Days'), ('weeks', 'Weeks'), ('months', 'Months')]),
             'before_after': forms.Select(choices=[('before', 'Before'), ('after', 'After')]),
+            'reminder_time' : forms.TimeInput(attrs={'type': 'time'})
         }
 class ClientForm(forms.ModelForm):
     class Meta:

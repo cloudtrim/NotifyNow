@@ -2,38 +2,8 @@
 {% block content %}
 
 
-
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        let sequenceIndex = 1;
 
-        $('#add-sequence').click(function () {
-            let newSequenceForm = $('#sequence-forms .sequence-form:first').clone(true).get(0);
-            $(newSequenceForm).find(':input').each(function () {
-                let name = $(this).attr('name').replace(/\d+/, sequenceIndex);
-                let id = $(this).attr('id').replace(/\d+/, sequenceIndex);
-                $(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
-            });
-            $(newSequenceForm).find('.sequence-number').text(sequenceIndex + 1);
-            $(newSequenceForm).find('.remove-sequence').show();
-            sequenceIndex++;
-            $('#sequence-forms').append(newSequenceForm);
-        });
-
-        $(document).on('click', '.remove-sequence', function () {
-            $(this).closest('.sequence-form').remove();
-
-            $('.sequence-form').each(function (index) {
-                $(this).find('.sequence-number').text(index + 1);
-            });
-        });
-
-
-        $('.remove-sequence').hide();
-    });
-</script>
 
 
 <h1>{% if reminder_form.instance.pk %}Edit Reminder{% else %}Add Reminder{% endif %}</h1>
@@ -59,6 +29,21 @@
         <button type="submit" id="save-reminder">{% if reminder_form.instance.pk %}Save Changes{% else %}Save
             Reminder{%endif %}</button>
     </form>
+
+    {% if reminder_form.errors %}
+    <div class="form-errors">
+      <ul>
+        {% for field in reminder_form %}
+          {% if field.errors %}
+            <li>{{ field.label }}: {{ field.errors }}</li>
+          {% endif %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 </div>
 
 

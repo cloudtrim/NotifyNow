@@ -23,6 +23,33 @@
 </script>
 
 <h1>Calendar</h1>
+
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact Number</th>
+            <th>Service Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+        <tr>
+            <td><a href="#" >{{ event.name }}</a></td>
+            <td>{{ event.start_time }}</td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="{% url 'update_client' event.pk %}" class="btn btn-primary btn-sm">Update</a>
+                <a href="{% url 'delete_client' event.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <a href="{% url 'add_event' %}" class="btn btn-primary mb-3">Add Event</a>
 <div id="calendar"></div>
 
