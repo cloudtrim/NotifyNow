@@ -4,8 +4,9 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import Reminder, Client, ReminderSequence
-from .forms import ReminderForm, ClientForm, ReminderSequenceForm
+from .models import Reminder, Client, ReminderSequence, Event
+from .forms import ReminderForm, ClientForm, ReminderSequenceForm, EventForm
+from django.http import JsonResponse
 from datetime import date, timedelta
 from django.forms import modelformset_factory
 from django.views.decorators.http import require_POST
@@ -13,6 +14,13 @@ from .models import Template
 from .forms import TemplateForm
 from django.core.mail import send_mail
 import logging
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from .forms import ProfileForm, CustomPasswordChangeForm
+
+
+
+
 logger = logging.getLogger('notfyNowApp')
 
 # Create your views here.
@@ -87,15 +95,25 @@ def reminder_detail(request, pk):
 def add_reminder(request):
     if request.method == 'POST':
         reminder_form = ReminderForm(request.POST)
+        #logger.info(reminder_form)
         sequence_forms = [ReminderSequenceForm(request.POST, prefix=str(i)) for i in range(len(request.POST.getlist('duration_value')))]
+        logger.info(sequence_forms)
+        if reminder_form.is_valid():
+            logger.info("reminder_form.is_valid")
+        
         
         if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
-            reminder = reminder_form.save()
+            reminder = reminder_form.save(commit=False)
+            reminder.save()
+            reminder_form.save_m2m() 
+            logger.info("form is valid now saving")
             for sequence_form in sequence_forms:
                 sequence = sequence_form.save(commit=False)
                 sequence.reminder = reminder
                 sequence.save()
             return redirect('reminders_list')
+        else :
+            logger.info("nothing to save")
     else:
         reminder_form = ReminderForm()
         sequence_forms = [ReminderSequenceForm(prefix='0')]
@@ -115,6 +133,7 @@ def edit_reminder(request, pk):
         
         if reminder_form.is_valid() and all([sf.is_valid() for sf in sequence_forms]):
             reminder = reminder_form.save()
+            
             reminder.sequences.all().delete()  # Remove old sequences
             for sequence_form in sequence_forms:
                 sequence = sequence_form.save(commit=False)
@@ -146,7 +165,9 @@ def reminder_success(request):
 
 def calendar(request):
     reminders = Reminder.objects.all()
-    return render(request, 'calendar.html')
+    events = Event.objects.all()
+    logger.info("got events = {}".format(events))
+    return render(request, 'calendar.html', {'events': events})
 
 def settings(request):
     return render(request, 'settings.html')
@@ -271,3 +292,66 @@ def success(request):
     return render(request, 'success.html')
 
 
+def calendar_view(request):
+    events = Event.objects.all()
+    return render(request, 'calendar.html', {'events': events})
+
+def add_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        logger.info("got form to save :{}".format(form))
+        if form.is_valid():
+            form.save()
+            return redirect('calendar')
+    else:
+        form = EventForm()
+    return render(request, 'add_event.html', {'form': form})
+
+def event_data(request):
+    events = Event.objects.all()
+    event_list = []
+    for event in events:
+        event_list.append({
+            'title': event.title,
+            'start': event.start_time.isoformat(),
+            'end': event.end_time.isoformat(),
+            'id': event.id 
+        })
+    return JsonResponse(event_list, safe=False)
+
+def event_details(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    return render(request, 'event_detail.html', {'event': event})
+
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'edit_event.html', {'form': form})
+
+
+
+@login_required
+def profile(request):
+    user = request.user
+    if request.method == 'POST':
+        password_form = CustomPasswordChangeForm(user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  
+            return redirect('profile')
+    else:
+        password_form = CustomPasswordChangeForm(user)
+    
+    profile_form = ProfileForm(instance=user)
+    return render(request, 'profile.html', {'profile_form': profile_form, 'password_form': password_form})
+
+
+def reminders_list(request):
+    reminders = Reminder.objects.all()
+    return render(request, 'reminder_list.html', {'reminders': reminders})

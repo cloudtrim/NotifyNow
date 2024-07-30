@@ -25,12 +25,11 @@ class Template(models.Model):
     
 class Reminder(models.Model):
     title = models.CharField(max_length=100)
-    due_date = models.DateField()
-    due_time = models.TimeField()
+    due_date = models.DateTimeField()    
     clients = models.ManyToManyField(Client)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 class ReminderSequence(models.Model):
     reminder = models.ForeignKey(Reminder, on_delete=models.CASCADE, related_name='sequences')
@@ -41,3 +40,11 @@ class ReminderSequence(models.Model):
 
     def __str__(self):
         return f"Sequence for {self.reminder.name} - {self.duration_value} {self.duration_unit} {self.before_after}"
+    
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    def __str__(self):
+        return self.title
